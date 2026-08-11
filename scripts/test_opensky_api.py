@@ -1,74 +1,86 @@
 import requests
 import pandas as pd
 
-url = "https://opensky-network.org/api/states/all"
 
-try:
-    response = requests.get(url, timeout=30)
+def main():
 
-    print("Status Code:", response.status_code)
+    url = "https://opensky-network.org/api/states/all"
 
-    data = response.json()
+    try:
+        response = requests.get(url, timeout=30)
 
-except requests.exceptions.RequestException as e:
-    print("Request failed:", e)
+        print("Status Code:", response.status_code)
 
-print("Number of aircraft:", len(data["states"]))
+        data = response.json()
 
-columns = [
-    "icao24",
-    "callsign",
-    "origin_country",
-    "time_position",
-    "last_contact",
-    "longitude",
-    "latitude",
-    "baro_altitude",
-    "on_ground",
-    "velocity",
-    "true_track",
-    "vertical_rate",
-    "sensors",
-    "geo_altitude",
-    "squawk",
-    "spi",
-    "position_source"
-]
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
+        return
 
-df = pd.DataFrame(data["states"], columns=columns)
+    print("Number of aircraft:", len(data["states"]))
 
-print("\nDataFrame:")
-print(df.head())
+    columns = [
+        "icao24",
+        "callsign",
+        "origin_country",
+        "time_position",
+        "last_contact",
+        "longitude",
+        "latitude",
+        "baro_altitude",
+        "on_ground",
+        "velocity",
+        "true_track",
+        "vertical_rate",
+        "sensors",
+        "geo_altitude",
+        "squawk",
+        "spi",
+        "position_source",
+    ]
 
-print("\nShape:")
-print(df.shape)
+    df = pd.DataFrame(data["states"], columns=columns)
 
-print("\nColumns:")
-print(df.columns.tolist())
+    print("\nDataFrame:")
+    print(df.head())
 
-df["time_position"] = pd.to_datetime(
-    df["time_position"],
-    unit="s",
-    utc=True
-)
+    print("\nShape:")
+    print(df.shape)
 
-df["last_contact"] = pd.to_datetime(
-    df["last_contact"],
-    unit="s",
-    utc=True
-)
+    print("\nColumns:")
+    print(df.columns.tolist())
 
-df["ingestion_timestamp"] = pd.Timestamp.now(tz="UTC")
+    df["time_position"] = pd.to_datetime(
+        df["time_position"],
+        unit="s",
+        utc=True
+    )
 
-print(df[[
-    "icao24",
-    "callsign",
-    "time_position",
-    "last_contact",
-    "ingestion_timestamp"
-]].head())
+    df["last_contact"] = pd.to_datetime(
+        df["last_contact"],
+        unit="s",
+        utc=True
+    )
 
-df.to_csv("data/raw/opensky_raw.csv", index=False)
+    df["ingestion_timestamp"] = pd.Timestamp.now(tz="UTC")
 
-print("\nRaw data saved successfully.")
-print("File: data/raw/opensky_raw.csv")
+    print(
+        df[
+            [
+                "icao24",
+                "callsign",
+                "time_position",
+                "last_contact",
+                "ingestion_timestamp",
+            ]
+        ].head()
+    )
+
+    df.to_csv("data/raw/opensky_raw.csv", index=False)
+
+    print("\nRaw data saved successfully.")
+    print("File: data/raw/opensky_raw.csv")
+
+
+if __name__ == "__main__":
+    main()
