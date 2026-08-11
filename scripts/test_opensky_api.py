@@ -67,3 +67,8 @@ print(df[[
     "last_contact",
     "ingestion_timestamp"
 ]].head())
+
+df.to_csv("data/raw/opensky_raw.csv", index=False)
+
+print("\nRaw data saved successfully.")
+print("File: data/raw/opensky_raw.csv")
