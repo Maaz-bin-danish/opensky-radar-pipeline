@@ -1,0 +1,8 @@
+SELECT
+    CASE
+        WHEN COUNT(*) = 0 THEN
+            'DATA QUALITY FAILED: RAW table is empty'
+        ELSE
+            'RAW CHECK PASSED'
+    END AS QUALITY_RESULT
+FROM OPENSKY_DB.RAW.OPENSKY_RAW;

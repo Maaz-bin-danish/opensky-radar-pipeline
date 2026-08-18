@@ -1,0 +1,17 @@
+SELECT
+    CASE
+        WHEN COUNT(*) > 0 THEN
+            'DATA QUALITY FAILED: Duplicate ICAO24 + LAST_CONTACT detected'
+        ELSE
+            'DUPLICATE CHECK PASSED'
+    END AS QUALITY_RESULT
+FROM (
+    SELECT
+        ICAO24,
+        LAST_CONTACT
+    FROM OPENSKY_DB.SILVER.OPENSKY_CLEAN
+    GROUP BY
+        ICAO24,
+        LAST_CONTACT
+    HAVING COUNT(*) > 1
+);
