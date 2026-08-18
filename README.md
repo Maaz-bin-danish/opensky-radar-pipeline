@@ -37,7 +37,7 @@ The pipeline is scheduled to run **hourly**.
 
 <div align="center">
 
-<img src="docs/architecture.png" alt="OpenSky Radar Data Engineering Architecture" width="95%">
+<img src="docs/architecture.jfif" alt="OpenSky Radar Data Engineering Architecture" width="95%">
 
 </div>
 
