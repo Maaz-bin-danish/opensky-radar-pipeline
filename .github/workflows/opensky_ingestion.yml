@@ -1,0 +1,37 @@
+name: OpenSky Ingestion
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::423623845003:role/GitHubActions-OpenSky-S3
+          aws-region: us-east-1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas
+
+      - name: Run OpenSky ingestion
+        run: |
+          python scripts/test_opensky_api.py
+
+      - name: Upload raw data to S3
+        run: |
+          aws s3 cp data/raw/opensky_raw.csv s3://opensky-radar-maaz/raw/opensky_raw.csv
